@@ -1,8 +1,14 @@
 import express, { type Request, Response, NextFunction } from "express";
+import path from "path";
+import { fileURLToPath } from "url";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
+
+// 👇 __dirname fix for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // 👇 extend http.IncomingMessage to include rawBody
 declare module "http" {
@@ -24,7 +30,7 @@ app.use(express.urlencoded({ extended: false }));
 // Logging middleware
 app.use((req, res, next) => {
   const start = Date.now();
-  const path = req.path;
+  const pathUrl = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
   const originalResJson = res.json;
@@ -35,16 +41,14 @@ app.use((req, res, next) => {
 
   res.on("finish", () => {
     const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
+    if (pathUrl.startsWith("/api")) {
+      let logLine = `${req.method} ${pathUrl} ${res.statusCode} in ${duration}ms`;
       if (capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
-
       if (logLine.length > 80) {
         logLine = logLine.slice(0, 79) + "…";
       }
-
       log(logLine);
     }
   });
@@ -64,18 +68,22 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // ✅ Setup Vite only in development
+  // ✅ Serve static files in production
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
+
+    // 👇 FIX: serve frontend routes (for Render)
+    app.get("*", (_req, res) => {
+      res.sendFile(path.resolve(__dirname, "public", "index.html"));
+    });
   }
 
   // ✅ Cross-platform safe host selection
   const port = parseInt(process.env.PORT || "5000", 10);
   const host = process.platform === "win32" ? "localhost" : "0.0.0.0";
 
-  // ✅ Clean server.listen — no reusePort (unsupported on Windows)
   server.listen({ port, host }, () => {
     log(`🚀 Server running at http://${host}:${port}`);
   });
