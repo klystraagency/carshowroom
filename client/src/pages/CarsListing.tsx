@@ -63,7 +63,7 @@ export default function CarsListing() {
         {showFilter && (
           <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center px-4">
             <div className="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-xl animate-in fade-in-50 zoom-in-95">
-              <h2 className="text-xl font-semibold mb-4">Search</h2>
+              <h2 className="text-xl font-semibold mb-4">Filters</h2>
 
               <FilterBar />
 
