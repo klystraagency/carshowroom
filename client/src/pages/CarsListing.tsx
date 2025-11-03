@@ -46,7 +46,7 @@ export default function CarsListing() {
 
         {/* FilterBar (hidden on mobile) */}
         <div className="hidden md:block">
-          <FilterBar />
+          <SearchBar />
         </div>
 
         {/* Mobile filter button */}
