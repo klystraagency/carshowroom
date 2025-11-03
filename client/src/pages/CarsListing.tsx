@@ -55,7 +55,7 @@ export default function CarsListing() {
             onClick={() => setShowFilter(true)}
             className="bg-black text-white hover:bg-gold hover:text-black px-6 py-3 font-medium"
           >
-            Filters
+            Search
           </Button>
         </div>
 
