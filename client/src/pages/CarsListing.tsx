@@ -11,8 +11,7 @@ export default function CarsListing() {
   const [visibleCars, setVisibleCars] = useState(6);
   const [compareMode, setCompareMode] = useState(false);
   const [selectedCars, setSelectedCars] = useState<string[]>([]);
-  const [showFilter, setShowFilter] = useState(false); // 👈 new state for filter modal
-  const [showFilter, setShowFilter] = useState(false); // 👈 new state for filter modal
+  const [showFilter, setShowFilter] = useState(false); // ✅ only one state
 
   const loadMore = () => {
     setVisibleCars((prev) => Math.min(prev + 3, carsData.length));
@@ -32,9 +31,7 @@ export default function CarsListing() {
     <div className="min-h-screen bg-white">
       <Header />
 
-
       <div className="pt-20">
-        {/* Hero Section */}
         {/* Hero Section */}
         <div className="bg-black text-white py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -47,12 +44,12 @@ export default function CarsListing() {
           </div>
         </div>
 
-        {/* FilterBar (hidden on mobile) */}
+        {/* FilterBar (desktop) */}
         <div className="hidden md:block">
           <FilterBar />
         </div>
 
-        {/* Mobile filter button */}
+        {/* Mobile Filter Button */}
         <div className="md:hidden flex justify-center items-center py-4 border-b border-gray-200 bg-white sticky top-[4.5rem] z-40">
           <Button
             onClick={() => setShowFilter(true)}
@@ -62,33 +59,14 @@ export default function CarsListing() {
           </Button>
         </div>
 
-        {/* Filter modal (for mobile) */}
+        {/* Filter Modal (mobile) */}
         {showFilter && (
           <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center px-4">
             <div className="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-xl animate-in fade-in-50 zoom-in-95">
               <h2 className="text-xl font-semibold mb-4">Filters</h2>
 
               <FilterBar />
-              <FilterBar />
 
-              <Button
-                onClick={() => setShowFilter(false)}
-                className="w-full mt-6 bg-black text-white hover:bg-gold hover:text-black"
-              >
-                Apply Filters
-              </Button>
-
-              <button
-                onClick={() => setShowFilter(false)}
-                className="absolute top-3 right-4 text-gray-500 hover:text-black text-xl font-bold"
-              >
-                ×
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Cars Grid */}
               <Button
                 onClick={() => setShowFilter(false)}
                 className="w-full mt-6 bg-black text-white hover:bg-gold hover:text-black"
